@@ -1,0 +1,29 @@
+name: Run
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  # run it manually
+  workflow_dispatch:    
+
+jobs:
+
+  build:
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest, ubuntu-24.04-arm]
+    runs-on: ${{ matrix.os }}  
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Build the Docker image
+      run: |
+        cd ~
+        git clone https://github.com/justdan96/7zip_static.git
+        cd 7zip_static
+        docker build --build-arg VERSION=$(curl -s https://www.7-zip.org/history.txt | head -n 4 | grep -Po '\K[0-9.]{5}+' | tr -d '.') -t 7zip_static .
+        docker run -it --rm -v $(pwd):/workdir -w="/workdir" 7zip_static sh -c "cp /opt/* /workdir"
+        
