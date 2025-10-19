@@ -24,7 +24,7 @@ jobs:
         cd ~
         git clone https://github.com/justdan96/7zip_static.git
         cd 7zip_static
-        if [ "$(uname -m)" == "aarch64" ]; then sed -i '34s/clang_x64/clang_arm64/' ./Dockerfile ; fi        
+        if [ "$(uname -m)" == "aarch64" ]; then sed -i '34s/clang_x64/clang_arm64/' ./Dockerfile ; sed -i 's/c_x64/c_arm64/g' ./Dockerfile ; fi        
         docker build --build-arg VERSION=$(curl -s https://www.7-zip.org/history.txt | head -n 4 | grep -Po '\K[0-9.]{5}+' | tr -d '.') -t 7zip_static .
         docker run -t --rm -v $(pwd):/workdir -w="/workdir" 7zip_static sh -c "cp /opt/* /workdir"
 
