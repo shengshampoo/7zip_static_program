@@ -25,7 +25,11 @@ jobs:
         git clone https://github.com/justdan96/7zip_static.git
         cd 7zip_static
         docker build --build-arg VERSION=$(curl -s https://www.7-zip.org/history.txt | head -n 4 | grep -Po '\K[0-9.]{5}+' | tr -d '.') -t 7zip_static .
-        docker run -it --rm -v $(pwd):/workdir -w="/workdir" 7zip_static sh -c "cp /opt/* /workdir"
+
+    - name: build static program with alpine linux docker 
+      run: |
+        docker run --cidfile=7zip_static.cid 7zip_static true
+        docker cp "$(7zip_static.cid):opt/." .
 
     - name: "Compression 7zip static program"
       run: | 
