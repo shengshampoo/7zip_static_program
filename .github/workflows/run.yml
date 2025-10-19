@@ -28,8 +28,7 @@ jobs:
 
     - name: build static program with alpine linux docker 
       run: |
-        docker run --cidfile=7zip_static.cid 7zip_static true
-        docker cp "$(7zip_static.cid):opt/." .
+        docker run -it --rm -v $(pwd):/workdir -w="/workdir" 7zip_static sh -c "cp /opt/* /workdir"
 
     - name: "Compression 7zip static program"
       run: | 
