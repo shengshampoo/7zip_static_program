@@ -34,7 +34,6 @@ jobs:
         sudo apt install --yes lzip    
         cd ~/7zip_static
         tar -I 'lzip -9' -vcf 7zz.tlz ./7zz
-        tar -I 'xz -9' -vcf 7zz.tar.xz ./7zz
 
     - name: Upload 7zip static program
       uses: actions/upload-artifact@v4
