@@ -28,7 +28,7 @@ jobs:
 
     - name: build static program with alpine linux docker 
       run: |
-        docker run -it --rm -v $(pwd):/workdir -w="/workdir" 7zip_static sh -c "cp /opt/* /workdir"
+        docker run -t --rm -v $(pwd):/workdir -w="/workdir" 7zip_static sh -c "cp /opt/* /workdir"
 
     - name: "Compression 7zip static program"
       run: | 
