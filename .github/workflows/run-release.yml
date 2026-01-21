@@ -38,12 +38,6 @@ jobs:
         cd ~/7zip_static
         tar -I 'lzip -9' -vcf 7zz.tlz ./7zz
 
-    - name: Upload 7zip static program
-      uses: actions/upload-artifact@v4
-      with:
-        name: 7zz-${{ matrix.os }}
-        path: ~/7zip_static/7zz.tlz
-
     - name: Upload binaries to release
       uses: svenstaro/upload-release-action@v2
       with:
