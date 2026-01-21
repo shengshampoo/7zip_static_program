@@ -41,7 +41,7 @@ jobs:
     - name: Upload binaries to release
       uses: svenstaro/upload-release-action@v2
       with:
-        file: ~/7zip_static/7zz.tlz
+        file: ./7zip_static/7zz.tlz
         asset_name: 7zz-${{ runner.os }}-${{ runner.arch }}.tlz
         tag: refs/tags/continuous
         overwrite: true
@@ -50,7 +50,7 @@ jobs:
     - name: Upload binaries to release
       uses: svenstaro/upload-release-action@v2
       with:
-        file: ~/7zip_static/7zz
+        file: ./7zip_static/7zz
         asset_name: 7zz-${{ runner.os }}-${{ runner.arch }}
         tag: refs/tags/continuous
         overwrite: true
