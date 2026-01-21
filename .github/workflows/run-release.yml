@@ -1,0 +1,63 @@
+name: Run to continuous tags
+
+on:
+  push:
+    branches: [ "main" ]
+    tags:
+      - 'continuous'
+  pull_request:
+    branches: [ "main" ]
+  # run it manually
+  workflow_dispatch:    
+  
+
+jobs:
+
+  build:
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest, ubuntu-24.04-arm]
+    runs-on: ${{ matrix.os }}  
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Build the Docker image
+      run: |
+        cd ~
+        git clone https://github.com/justdan96/7zip_static.git
+        cd 7zip_static
+        if [ "$(uname -m)" == "aarch64" ]; then sed -i '34s/clang_x64/clang_arm64/' ./Dockerfile ; sed -i 's/c_x64/c_arm64/g' ./Dockerfile ; fi        
+        docker build --build-arg VERSION=$(curl -s https://www.7-zip.org/history.txt | head -n 4 | grep -Po '\K[0-9.]{5}+' | tr -d '.') -t 7zip_static .
+        docker run -t --rm -v $(pwd):/workdir -w="/workdir" 7zip_static sh -c "cp /opt/* /workdir"
+
+    - name: "Compression 7zip static program"
+      run: | 
+        sudo apt update
+        sudo apt install --yes lzip    
+        cd ~/7zip_static
+        tar -I 'lzip -9' -vcf 7zz.tlz ./7zz
+
+    - name: Upload 7zip static program
+      uses: actions/upload-artifact@v4
+      with:
+        name: 7zz-${{ matrix.os }}
+        path: ~/7zip_static/7zz.tlz
+
+    - name: Upload binaries to release
+      uses: svenstaro/upload-release-action@v2
+      with:
+        file: ~/7zip_static/7zz.tlz
+        asset_name: 7zz-${{ runner.os }}-${{ runner.arch }}.tlz
+        tag: refs/tags/continuous
+        overwrite: true
+        body: "fully static 7zz binary using alpine linux docker containers"
+
+    - name: Upload binaries to release
+      uses: svenstaro/upload-release-action@v2
+      with:
+        file: ~/7zip_static/7zz
+        asset_name: 7zz-${{ runner.os }}-${{ runner.arch }}
+        tag: refs/tags/continuous
+        overwrite: true
+        body: "fully static 7zz binary using alpine linux docker containers"        
