@@ -35,13 +35,13 @@ jobs:
       run: | 
         sudo apt update
         sudo apt install --yes lzip    
-        cd ~/7zip_static
+        cp ~/7zip_static/7zz .
         tar -I 'lzip -9' -vcf 7zz.tlz ./7zz
 
     - name: Upload binaries to release
       uses: svenstaro/upload-release-action@v2
       with:
-        file: ./7zip_static/7zz.tlz
+        file: ./7zz.tlz
         asset_name: 7zz-${{ runner.os }}-${{ runner.arch }}.tlz
         tag: refs/tags/continuous
         overwrite: true
@@ -50,7 +50,7 @@ jobs:
     - name: Upload binaries to release
       uses: svenstaro/upload-release-action@v2
       with:
-        file: ./7zip_static/7zz
+        file: ./7zz
         asset_name: 7zz-${{ runner.os }}-${{ runner.arch }}
         tag: refs/tags/continuous
         overwrite: true
