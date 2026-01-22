@@ -37,6 +37,7 @@ jobs:
         sudo apt install --yes lzip    
         cp ~/7zip_static/7zz .
         tar -I 'lzip -9' -vcf 7zz.tlz ./7zz
+        tar -I 'xz -9' -vcf 7zz.tar.xz ./7zz
 
     - name: Upload binaries to release
       uses: svenstaro/upload-release-action@v2
@@ -50,8 +51,8 @@ jobs:
     - name: Upload binaries to release
       uses: svenstaro/upload-release-action@v2
       with:
-        file: ./7zz
-        asset_name: 7zz-${{ runner.os }}-${{ runner.arch }}
+        file: ./7zz.tar.xz
+        asset_name: 7zz-${{ runner.os }}-${{ runner.arch }}.tar.xz
         tag: refs/tags/continuous
         overwrite: true
         body: "fully static 7zz binary using alpine linux docker containers"        
